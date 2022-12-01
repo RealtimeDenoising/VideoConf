@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <script>
+        navigator.mediaDevices.getUserMedia({ video: true })
+   .then(mediaStream => {
+       const track = mediaStream.getVideoTracks()[0];
+
+       console.log('The device supports the following capabilities: ', track.getCapabilities());
+
+       // set manual exposure mode
+       track.applyConstraints({
+           advanced: [
+               {exposureMode: 'manual'}
+           ]})
+           .then(() => {
+               // set target value for exposure time
+               track.applyConstraints({
+                   advanced: [
+                       {exposureTime: 3}
+                   ]})
+                   .then(() => {
+                       // success
+                       console.log('The new device settings are: ', track.getSettings());
+                   })
+                   .catch(e => {
+                       console.error('Failed to set exposure time', e);
+                   });
+           })
+           .catch(e => {
+               console.error('Failed to set manual exposure mode', e);
+           });
+   });
+    </script>
+</body>
+</html>
